@@ -45,7 +45,8 @@ def dfs(x):
         for num in promising:
             sudoku[i][j] = num  # 유망한 숫자 중 하나를 넣어줌
             dfs(x + 1)  # 다음 0으로 넘어감
-            sudoku[i][j] = 0
+            sudoku[i][j] = 0 # 
 
 
 dfs(0)
+print()
