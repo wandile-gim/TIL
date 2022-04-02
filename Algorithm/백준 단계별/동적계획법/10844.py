@@ -19,5 +19,5 @@ for i in range(2, N+1):
         else:
             dp[i][j] = dp[i-1][j-1] + dp[i-1][j+1]
 
-mod = 100000000
+mod = 1000000000
 print(sum(dp[N]) % mod)
