@@ -139,3 +139,105 @@ def validate(self, data):
 
  
 
+## API Reference
+
+공식 문서에 나와있는 예제 모델이다. 공식문서에서 이 모델을 바탕으로 Serializer가 제공하는 기능을 설명하는데 정말 강력한 기능을 제공한다는 느낌을 많이 받았다..
+
+
+
+```python
+class Album(models.Model):
+    album_name = models.CharField(max_length=100)
+    artist = models.CharField(max_length=100)
+
+class Track(models.Model):
+    album = models.ForeignKey(Album, related_name='tracks', on_delete=models.CASCADE)
+    order = models.IntegerField()
+    title = models.CharField(max_length=100)
+    duration = models.IntegerField()
+
+    class Meta:
+        unique_together = ['album', 'order']
+        ordering = ['order']
+
+    def __str__(self):
+        return '%d: %s' % (self.order, self.title)
+```
+
+
+
+### StringRelatedField
+
+`StringRelatedField` 는   `__str__` 메서드를 사용하는 타깃의 연관관계를 표현하는데 사용된다. 예를들어, 
+
+```python
+class AlbumSerializer(serializers.ModelSerializer):
+    tracks = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Album
+        fields = ['album_name', 'artist', 'tracks']
+```
+
+아래는 연관 관계에 있는 모델에 정의된  `__str__`메서드 이다.
+
+```python
+  def __str__(self):
+        return '%d: %s' % (self.order, self.title)
+```
+
+tracks에서 `__str__`이 적용된 형태로 데이터를 제공해준다.
+
+```json
+{
+    'album_name': 'Things We Lost In The Fire',
+    'artist': 'Low',
+    'tracks': [
+        '1: Sunflower',
+        '2: Whitetail',
+        '3: Dinosaur Act',
+        ...
+    ]
+}
+```
+
+to-many 연관관계에 적용하려면  `many` 를 True로 적용해야한다.
+
+
+
+### SlugRelatedField
+
+`SlugRelatedField`는 연관관계에 있는 타겟의 필드를 표현하는데 사용된다. 예를들어, 
+
+```python
+class AlbumSerializer(serializers.ModelSerializer):
+    tracks = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='title'
+     )
+
+    class Meta:
+        model = Album
+        fields = ['album_name', 'artist', 'tracks']
+```
+
+연관관계에 있는 track테이블의 필드중 `slug_field`에 지정한 필드는 아래와 같이 표현된다. 
+
+```json
+{
+    'album_name': 'Dear John',
+    'artist': 'Loney Dear',
+    'tracks': [
+        'Airport Surroundings',
+        'Everything Turns to You',
+        'I Was Only Going Out',
+        ...
+    ]
+}
+```
+
+StringRelatedField는 연관 테이블의 `__str__`메서드를 타겟으로 한다면 SlugRelatedField는 테이블의 속성을 타겟으로 표현해준다.
+
+
+
