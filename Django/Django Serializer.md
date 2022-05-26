@@ -1,6 +1,10 @@
 # Django Serializer
 
-Serializer는 model의 Serialization과 form의 validation 기능을 제공해주기 때문에 지원되는 두 기능과 같은 것으로 보여진다. 
+참조 https://www.django-rest-framework.org/api-guide/relations/#nested-relationships (Drf공식 문서)
+
+Serializer는 model의 Serialization과 form의 validation과 같은 기본적인 기능 외에도 추가적인 정말 용이한 기능을 제공하고있다.
+
+
 
 ## 메모리 내부 vs 메모리 외부
 
@@ -12,11 +16,9 @@ Serializer는 model의 Serialization과 form의 validation 기능을 제공해�
 
 Serialize된 데이터를 복원시 그 정보를 유지해야한다.
 
-
-
 Serializer의 두가지 역할 직렬화, 역직렬화에 대해서 Comment 테이블에 대해서 실험을 진행한다.
 
-### serialize
+### Serialize
 
 ```python
 c0 = Commment.object.all()[0]
@@ -32,9 +34,11 @@ type(json0)
 #bytes로 변환된다.
 ```
 
-##### serialize 의 DataFlow
 
-Instance,
+
+##### Serialize 의 DataFlow
+
+Instance
 
 Serializer(instance)
 
@@ -238,6 +242,24 @@ class AlbumSerializer(serializers.ModelSerializer):
 ```
 
 StringRelatedField는 연관 테이블의 `__str__`메서드를 타겟으로 한다면 SlugRelatedField는 테이블의 속성을 타겟으로 표현해준다.
+
+
+
+**Arguments**:
+
+- `slug_field` - The field on the target that should be used to represent it. This should be a field that uniquely identifies any given instance. For example, `username`. **required**
+
+- `queryset` - The queryset used for model instance lookups when validating the field input. Relationships must either set a queryset explicitly, or set `read_only=True`.
+
+- `many` - If applied to a to-many relationship, you should set this argument to `True`.
+
+- `allow_null` - If set to `True`, the field will accept values of `None` or the empty string for nullable relationships. Defaults to `False`.
+
+  
+
+공식문서에서 참조한 SlugRelatedField의 Arguments들이다. slugfield는 소개한내용 그대로이고 many역시 to-many연관 관계를 표현하기 위한 속성이다. 
+
+allow_null의 경우 기본값이 False인데, True로 설정할 경우 nullable한 관계에서 None이나 empty한 데이터를 허용해주는 속성이다.
 
 
 
