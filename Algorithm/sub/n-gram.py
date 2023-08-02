@@ -1,38 +1,34 @@
-from functools import reduce
-from os import sep
+s = ['xddxdca', 'jpcpjppcyycyy', 'brbabrrara', 'xxx', 'gwgwgw']
 
 
-text = 'hello'
-# for i in range(len(text)-1):
-#     print(text[i], text[i+1])
+def solution(s):
+    answer = []
+    dic = {}
+    for alphabet in s:
+        dic[alphabet] = s.count(alphabet)
+    dic = sorted(dic.items(), key=lambda target: target[1], reverse=True)
+    max_value = dic[0][1]
+    second = 0
+    for i in range(len(dic)):
+        if dic[i][1] == max_value:
+            second = second + 1
 
-# two_gram = zip(text, text[1:])
-# for i in two_gram:
-#     print(i[0], i[1], sep='')
+    if len(dic) > second:
+        second_value = dic[second][1]
+    else:
+        second_value = dic[second-1][1]
 
-# for i in range(len(text)-2):
-#     print(text[i], text[i+1], text[i+2], sep='')
+    for i in range(len(dic)):
+        if dic[i][1] == second_value:
+            if len(dic) > second+1:
+                answer.append(dic[i][0])
+            else:
+                answer.append("-")
 
-# print(list(zip(*['hello', 'ello', 'llo'])))
-
-# print(list(zip(*[text[i:] for i in range(3)])))
-# # text = 'show me the money'
-# # words = text.split()
-# # print(list(zip(words, words[1:])))
-# word = 'level'
-
-# print(word == ''.join(reversed(word)))
-
-# ho = True
-# for i in range(len(word)//2):
-#     if word[i] != word[-1-i]:
-#         ho = False
-#         break
-# print(ho)
+    answer = sorted(answer)
+    return ''.join(set(answer))
+    # 두 번째로 큰 인덱스의 위치와 같은
 
 
-a = [5, 7, 8, 12, 2, 4, 0, 3, 9]
-print([i for i in a if i > 5 and i < 10])
-print(list(filter(lambda x: x > 5 and x < 10, a)))
-a = [1, 2, 3, 4, 5]
-print(reduce(lambda x, y: x+y, a))
+for i in range(len(s)):
+    print(solution(s[i]))
